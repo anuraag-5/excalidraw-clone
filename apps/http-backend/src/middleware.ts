@@ -1,12 +1,12 @@
 import { NextFunction, Request, Response } from "express";
-import jwt from "jsonwebtoken";
+import jwt, { JwtPayload } from "jsonwebtoken";
 
 export function middleware(req: Request, res: Response, next: NextFunction) {
   const token = req.headers["authorization"] || "";
 
-  const decodedToken = jwt.verify(token, process.env.JWT_SECRET!) as { userId: string };
+  const decodedToken = jwt.verify(token, process.env.JWT_SECRET!) as JwtPayload
 
-  if (decodedToken) {
+  if (decodedToken.userId) {
     req.userId = decodedToken.userId;
     next();
   } else {

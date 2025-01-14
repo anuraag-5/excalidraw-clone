@@ -15,7 +15,6 @@ app.post("/signin",(req,res) => {
     jwt.sign({
         userId
     },process.env.JWT_SECRET!);
-    console.log(process.env.JWT_SECRET! || "Undefined logged")
 })
 
 app.post("/room", middleware, (req,res) => {

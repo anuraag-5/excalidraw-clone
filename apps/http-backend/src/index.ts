@@ -1,6 +1,6 @@
 import express from "express"
 import jwt from "jsonwebtoken"
-import { middleware } from "./middleware";
+import { middleware } from "./middleware.js";
 import { JWT_SECRET } from "@repo/backend-common/config";
 import { CreateRoomSchema, CreateUserSchema, SigninSchema } from "@repo/common/types"
 import { prismaClient } from "@repo/db/client"
@@ -8,8 +8,8 @@ import { prismaClient } from "@repo/db/client"
 const app = express();
 
 app.post("/signup",(req, res) => {
-    const data = CreateUserSchema.safeParse(req.body);
-    if(!data.success){
+    const userData = CreateUserSchema.safeParse(req.body);
+    if(!userData.success){
         res.status(403).json({
             error: "Incorrect inputs."
         })
@@ -18,6 +18,17 @@ app.post("/signup",(req, res) => {
     }
 
     // db calls
+    try {
+        const user = prismaClient.user.create({
+            data: {
+                name: userData.data.name,
+                password: userData.data.password,
+                email: userData.data.email
+            }
+        })
+    } catch (error) {
+        
+    }
 
     res.json({
         userId: "123"
@@ -53,4 +64,4 @@ app.post("/room", middleware, (req,res) => {
     })
 })
 
-app.listen(3001)
+app.listen(3002)
